@@ -31,6 +31,9 @@
 	  }
 
 ?>
+	<br>
+	<br>
+	<br>
 	 <table class="table table-bordered">
 		<thead>
 		  <tr>
@@ -51,7 +54,24 @@
 	  
 	
 <?php	}
-	foobar("car_user", array("mobile_no","car_no","car_type")); ?>
+
+
+
+
+
+
+
+
+	if (isset($_GET['search']))
+    {
+        getData($_GET['search']);
+    }
+
+    function getData($tableSearch)
+    {
+        foobar($tableSearch, array("mobile_no", "car_no", "car_type")); 
+    }
+	?>
 	
 	
 	<script src="http://code.jquery.com/jquery.js"></script>

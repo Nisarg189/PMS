@@ -1,3 +1,105 @@
+<?php 
+	function foobar($tableName, $Array, $lookupCheck)
+	{
+	  $hostname = 'localhost:3306';
+	  $username = 'root';
+	  $password = '';
+	  $dbname = 'pms';
+
+	  try {
+		$dbh = new PDO("mysql:host=$hostname;dbname=$dbname", $username, $password);
+		if(!$lookupCheck)
+			$sql = $dbh->prepare("SELECT * FROM Lookup");
+		else
+			$sql = $dbh->prepare("SELECT * FROM $tableName");
+
+		if($sql->execute()) {
+		   $sql->setFetchMode(PDO::FETCH_ASSOC);
+		}
+	  }
+	  catch(Exception $error) {
+		  echo '<p>', $error->getMessage(), '</p>';
+	  }
+		$actualTable = '1';
+		if($lookupCheck)
+		{ ?>
+			<br>
+			<br>
+			<br>
+			 <table class="table table-bordered">
+				<thead>
+				  <tr>
+				  
+				 <?php for($i=0;$i<count($Array);$i++) { ?>
+				 <th><?php echo $Array[$i]; ?> </th><?php } ?>
+				  </tr>
+				</thead>
+				<tbody>
+				<?php while($row = $sql->fetch()) { ?> 
+				  <tr>
+				  <?php for($i=0;$i<count($Array);$i++) { ?>
+				  <td><?php echo $row[$Array[$i]]; ?></td> <?php } ?>
+				  </tr>
+				  <?php } ?>
+				</tbody>
+			  </table>
+<?php	}
+		else
+		{
+			while($row = $sql->fetch()) {
+				if($row[$Array[0]]==$tableName && $row[$Array[2]]=='1')
+					$actualTable = $row[$Array[1]];
+			}
+		}
+		return $actualTable;
+	}
+
+	if (isset($_GET['search']))
+    {
+        sendData($_GET['search']);
+    }
+	
+	function sendData($tableSearchSend)
+	{
+		$actualTableName = getData($tableSearchSend, false);
+		if($actualTableName=='1')
+		{
+			?> <br><br><br> <?php
+			echo "Access Denied";
+		}
+		else
+			$dummyData = getData($actualTableName, true);
+	}
+	
+
+    function getData($tableSearch, $check)
+    {
+		$conn = mysql_connect('localhost:3306', 'root', '');
+		if (!$conn) {
+			die('Could not connect: ' . mysql_error());
+		}
+		mysql_select_db('pms');
+		if(!$check)
+			$query = "select * from Lookup";
+		else
+			$query = "select * from $tableSearch";
+		$result = mysql_query($query);
+		if (!$result) {
+			die('Query failed: ' . mysql_error());
+		}
+		
+		$i = 0;
+		while ($i < mysql_num_fields($result)) 
+		{
+			$meta = mysql_fetch_field($result, $i);
+			$output[$i] = $meta->name;
+			$i++;
+		}
+		$returnTableName = foobar($tableSearch, $output, $check);
+		return $returnTableName;
+    }
+	?>
+
 <!DOCTYPE html>
 
 <html>
@@ -40,15 +142,16 @@
 					<div class="nav-collapse collapse navbar-responsive-collapse">
 						<ul class="nav navbar-nav">
 							<li class="active">
-								<a href="#">Home</a>
+								<a href="?search=User">Home</a>
 							</li>
 							
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Master<strong class="caret"></strong></a>
 								
 								<ul class="dropdown-menu">
+								
 									<li>
-										<a href="http://localhost/PMS/05%20-%20Final%20Website/PMS/caruser.php">User</a>
+										<a href="?search=CarUser">User</a>
 									</li>
 									
 									<li>
@@ -112,12 +215,7 @@
 			
 			
 			
-			<div class="row" id="featuresHeading">
-				<div class="col-12">
-					<h2>More Features</h2>
-					<p class="lead"> Welcome to the website</p>
-				</div><!-- end col-12 -->
-			</div><!-- end featuresHeading -->
+			
 			
 			
 		
@@ -132,6 +230,7 @@
 	
 	<!-- Bootstrap JS -->
 	<script src="bootstrap/js/bootstrap.min.js"></script>
+	
 	
 	<!-- Custom JS -->
 	<script src="includes/js/script.js"></script>
