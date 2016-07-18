@@ -1,11 +1,13 @@
 <?php 
-	function foobar($tableName, $Array, $lookupCheck)
+	function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table in MySQL, Array is the array of field name, lookupCheck is boolean indicator*/
 	{
 	  $hostname = 'localhost:3306';
 	  $username = 'root';
 	  $password = '';
 	  $dbname = 'pms';
-
+	  /* Following try-catch block prepares an sql query based on boolean value of lookupCheck. If lookupCheck=0, it will find the actualTableName 
+		 If lookupCheck=1, it will fetch the entire required table
+	  */
 	  try {
 		$dbh = new PDO("mysql:host=$hostname;dbname=$dbname", $username, $password);
 		if(!$lookupCheck)
@@ -20,8 +22,9 @@
 	  catch(Exception $error) {
 		  echo '<p>', $error->getMessage(), '</p>';
 	  }
+	  
 		$actualTable = '1';
-		if($lookupCheck)
+		if($lookupCheck)	
 		{ ?>
 			<br>
 			<br>
@@ -29,9 +32,8 @@
 			 <table class="table table-bordered">
 				<thead>
 				  <tr>
-				  
-				 <?php for($i=0;$i<count($Array);$i++) { ?>
-				 <th><?php echo $Array[$i]; ?> </th><?php } ?>
+				   <?php for($i=0;$i<count($Array);$i++) { ?>
+				  <th><?php echo $Array[$i]; ?> </th><?php } ?>
 				  </tr>
 				</thead>
 				<tbody>
@@ -42,75 +44,57 @@
 				  </tr>
 				  <?php } 
 
+					if(isset($_POST['add'])) 
+					{
+						$dbhost = 'localhost:3306';
+						$dbuser = 'root';
+						$dbpass = '';
+						$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+						
+						if(! $conn ) {
+						   die('Could not connect: ' . mysql_error());
+						}
 				
-			  
-			  
-         if(isset($_POST['add'])) {
-            $dbhost = 'localhost:3306';
-            $dbuser = 'root';
-            $dbpass = '';
-            $conn = mysql_connect($dbhost, $dbuser, $dbpass);
-            
-            if(! $conn ) {
-               die('Could not connect: ' . mysql_error());
-            }
-            
-            if(! get_magic_quotes_gpc() ) {
-               $mobile_no = addslashes ($_POST['mobile_no']);
-               $car_no = addslashes ($_POST['car_no']);
-			   $car_type = addslashes ($_POST['car_type']);
-            }else {
-               $mobile_no = $_POST['mobile_no'];
-               $car_no = $_POST['car_no'];
-			   $car_type = $_POST['car_type'];
-            }
-            
-            $sql = "INSERT INTO car_user ". "(mobile_no, car_no, car_type) ". "VALUES('$mobile_no','$car_no', '$car_type')";
-               
-            mysql_select_db('pms');
-            $retval = mysql_query( $sql, $conn );
-            
-            if(! $retval ) {
-               die('Could not enter data: ' . mysql_error());
-            }
-            
-            echo "Entered data successfully\n";
-            
-            mysql_close($conn);
-         }else {
-            ?>
-            
-               <form method = "post" action = "<?php $_PHP_SELF ?>">
-                     <tr>
-                        <td><input name = "mobile_no" type = "text" 
-                           id = "mobile_no"></td>
-                        <td><input name = "car_no" type = "text" 
-                           id = "car_no"></td>
-						<td><input name = "car_type" type = "text" 
-                           id = "car_type"></td>
-					 
-						<td><input name = "add" type = "submit" id = "add" 
+						if(! get_magic_quotes_gpc() ) {
+							for($i=0;$i<count($Array);$i++){
+							$addField[$i] = addslashes ($_POST["$Array[$i]"]);}
+						}else {
+							for($i=0;$i<count($Array);$i++){
+							$addField[$i] = $_POST["$Array[$i]"];}
+						}
+						$str = implode (", ", $Array);
+						$val = "'".implode ("','", $addField)."'";
+						$sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
+						   
+						mysql_select_db('pms');
+						$retval = mysql_query( $sql, $conn );
+						
+						if(! $retval ) {
+						   die('Could not enter data: ' . mysql_error());
+						}
+						else
+							header("Refresh:0");
+						
+						mysql_close($conn);
+					}
+					else 
+					{?>
+						<form method = "post" action = "<?php $_PHP_SELF ?>">
+							<tr>
+								<?php for($i=0;$i<count($Array);$i++)  {?>
+								<td><input name = "<?php echo $Array[$i]; ?>" type = "text" 
+							   id = "<?php echo $Array[$i]; ?>"></td>
+								<?php } ?>
+								<td><input name = "add" type = "submit" id = "add" 
                               value = "Add"></td>
-					 </tr>
-                  </tbody>
-				  </form>
-			  </table>
-			  
-               
-            
-            <?php
-         }
-      
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  	}
+							</tr>
+						</form>
+					</tbody>
+					</table>
+				  
+					<?php
+					}
+		}
 		else
 		{
 			while($row = $sql->fetch()) {
@@ -162,7 +146,7 @@
 			$output[$i] = $meta->name;
 			$i++;
 		}
-		$returnTableName = foobar($tableSearch, $output, $check);
+		$returnTableName = fetch_edit($tableSearch, $output, $check);
 		return $returnTableName;
     }
 	
@@ -210,7 +194,7 @@
 					<div class="nav-collapse collapse navbar-responsive-collapse">
 						<ul class="nav navbar-nav">
 							<li class="active">
-								<a href="?search=User">Home</a>
+								<a href="index.php">Home</a>
 							</li>
 							
 							<li class="dropdown">
