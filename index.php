@@ -37,24 +37,22 @@
 				  </tr>
 				</thead>
 				<tbody>
-				<?php while($row = $sql->fetch()) { ?> 
+				<?php
+					$counter = 0;
+				while($row = $sql->fetch()) {
+						$counter++; ?> 
 				  <tr>
 				  <?php for($i=0;$i<count($Array);$i++) { ?>
-				  <td><?php echo $row[$Array[$i]]; ?></td> <?php } ?>
+				  <td><?php echo $row[$Array[$i]]; ?></td> <?php }
 				  
-				  
-				  
-				  
-				  
-				  <?php
-				  if(isset($_POST['delete'])) 
+				  if(isset($_POST["$counter"])) 
 					{
 						$conn = mysql_connect($hostname, $username, $password);
 						
 						if(! $conn ) {
 						   die('Could not connect: ' . mysql_error());
 						}
-				
+						
 						$value = trim($row[$Array[0]],'"');
 						$sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
 						   
@@ -70,24 +68,11 @@
 						mysql_close($conn);
 					}
 					?>
-				  
-				  
-				  
-				  
-				  
 				  <form method = "post" action = "<?php $_PHP_SELF ?>">
-								<td><button type="submit" id = "delete" name="delete">
+								<td><button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
 								   <span class="glyphicon glyphicon-trash"></span>
 								</button></td>
 						</form>
-				  
-				  
-				  
-				  
-				  
-				  
-				  
-				  
 				  
 				  </tr>
 				  <?php } 
