@@ -40,10 +40,77 @@
 				  <?php for($i=0;$i<count($Array);$i++) { ?>
 				  <td><?php echo $row[$Array[$i]]; ?></td> <?php } ?>
 				  </tr>
-				  <?php } ?>
-				</tbody>
+				  <?php } 
+
+				
+			  
+			  
+         if(isset($_POST['add'])) {
+            $dbhost = 'localhost:3306';
+            $dbuser = 'root';
+            $dbpass = '';
+            $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+            
+            if(! $conn ) {
+               die('Could not connect: ' . mysql_error());
+            }
+            
+            if(! get_magic_quotes_gpc() ) {
+               $mobile_no = addslashes ($_POST['mobile_no']);
+               $car_no = addslashes ($_POST['car_no']);
+			   $car_type = addslashes ($_POST['car_type']);
+            }else {
+               $mobile_no = $_POST['mobile_no'];
+               $car_no = $_POST['car_no'];
+			   $car_type = $_POST['car_type'];
+            }
+            
+            $sql = "INSERT INTO car_user ". "(mobile_no, car_no, car_type) ". "VALUES('$mobile_no','$car_no', '$car_type')";
+               
+            mysql_select_db('pms');
+            $retval = mysql_query( $sql, $conn );
+            
+            if(! $retval ) {
+               die('Could not enter data: ' . mysql_error());
+            }
+            
+            echo "Entered data successfully\n";
+            
+            mysql_close($conn);
+         }else {
+            ?>
+            
+               <form method = "post" action = "<?php $_PHP_SELF ?>">
+                     <tr>
+                        <td><input name = "mobile_no" type = "text" 
+                           id = "mobile_no"></td>
+                        <td><input name = "car_no" type = "text" 
+                           id = "car_no"></td>
+						<td><input name = "car_type" type = "text" 
+                           id = "car_type"></td>
+					 
+						<td><input name = "add" type = "submit" id = "add" 
+                              value = "Add"></td>
+					 </tr>
+                  </tbody>
+				  </form>
 			  </table>
-<?php	}
+			  
+               
+            
+            <?php
+         }
+      
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  	}
 		else
 		{
 			while($row = $sql->fetch()) {
@@ -98,6 +165,7 @@
 		$returnTableName = foobar($tableSearch, $output, $check);
 		return $returnTableName;
     }
+	
 	?>
 
 <!DOCTYPE html>
@@ -155,15 +223,15 @@
 									</li>
 									
 									<li>
-										<a href="#">Worker</a>
+										<a href="?search=Worker">Worker</a>
 									</li>
 									
 									<li>
-										<a href="#">Location</a>
+										<a href="?search=Area">Location</a>
 									</li>
 									
 									<li>
-										<a href="#">Fare</a>
+										<a href="?search=Fare">Fare</a>
 									</li>
 								</ul><!-- end dropdown-menu -->
 							</li>
