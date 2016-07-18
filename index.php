@@ -29,7 +29,7 @@
 			<br>
 			<br>
 			<br>
-			 <table class="table table-bordered">
+			 <table class="table table-bordered" align="center" style="width:10%">
 				<thead>
 				  <tr>
 				   <?php for($i=0;$i<count($Array);$i++) { ?>
@@ -41,15 +41,60 @@
 				  <tr>
 				  <?php for($i=0;$i<count($Array);$i++) { ?>
 				  <td><?php echo $row[$Array[$i]]; ?></td> <?php } ?>
+				  
+				  
+				  
+				  
+				  
+				  <?php
+				  if(isset($_POST['delete'])) 
+					{
+						$conn = mysql_connect($hostname, $username, $password);
+						
+						if(! $conn ) {
+						   die('Could not connect: ' . mysql_error());
+						}
+				
+						$value = trim($row[$Array[0]],'"');
+						$sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
+						   
+						mysql_select_db($dbname);
+						$retval = mysql_query( $sql, $conn );
+						
+						if(! $retval ) {
+						   die('Could not delete data: ' . mysql_error());
+						}
+						else
+							header("Refresh:0");
+						
+						mysql_close($conn);
+					}
+					?>
+				  
+				  
+				  
+				  
+				  
+				  <form method = "post" action = "<?php $_PHP_SELF ?>">
+								<td><button type="submit" id = "delete" name="delete">
+								   <span class="glyphicon glyphicon-trash"></span>
+								</button></td>
+						</form>
+				  
+				  
+				  
+				  
+				  
+				  
+				  
+				  
+				  
 				  </tr>
 				  <?php } 
 
 					if(isset($_POST['add'])) 
 					{
-						$dbhost = 'localhost:3306';
-						$dbuser = 'root';
-						$dbpass = '';
-						$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+						$conn = mysql_connect($hostname, $username, $password);
 						
 						if(! $conn ) {
 						   die('Could not connect: ' . mysql_error());
@@ -66,7 +111,7 @@
 						$val = "'".implode ("','", $addField)."'";
 						$sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
 						   
-						mysql_select_db('pms');
+						mysql_select_db($dbname);
 						$retval = mysql_query( $sql, $conn );
 						
 						if(! $retval ) {
@@ -85,8 +130,10 @@
 								<td><input name = "<?php echo $Array[$i]; ?>" type = "text" 
 							   id = "<?php echo $Array[$i]; ?>"></td>
 								<?php } ?>
-								<td><input name = "add" type = "submit" id = "add" 
-                              value = "Add"></td>
+								<td><button type="submit" id = "add" name="add">
+								   <span class="glyphicon glyphicon-plus"></span>
+								</button></td>
+							  
 							</tr>
 						</form>
 					</tbody>
