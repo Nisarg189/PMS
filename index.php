@@ -109,10 +109,23 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                         }
                         else
                         {
-                            while($rowFetch = mysql_fetch_array($retval, MYSQL_ASSOC)) {
-
-                                print_r($rowFetch);
+                            echo "<table align='center' border='1'>";
+                            echo "<tr>";
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                echo "<td width='200px' align='center'>" . $Array[$i] . "</td>";
                             }
+                            echo "</tr>";
+                            while($rowFetch=mysql_fetch_array($retval)) {
+                                echo "<tr>";
+                                for($i=0;$i<count($Array);$i++)
+                                {
+                                    $var[$i] = $rowFetch[$Array[$i]];
+                                    echo "<td width='200px' align='center'>" . $var[$i] . "</td>";
+                                }
+                                echo "</tr>";
+                            }
+                            echo "</table>";
                             /*header("Refresh:0");*/
                         }
                         mysql_close($conn);
