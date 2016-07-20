@@ -42,16 +42,43 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             </div>
 
             <div class = "col-sm-8">
-                <form method = "post" action = "<?php $_PHP_SELF ?>">
                     <button type="submit" class="btn btn-default btn-sm" name="searchButton" id="searchButton">
-                        <span class="glyphicon glyphicon-search"></span> Search
+                        <span class="glyphicon glyphicon-search"></span><a href="" id="alertMe">Search</a>
                     </button>
-                </form>
             </div>
 
         </div>
 
+
+        <div class="container">
+
+            <div class="alert alert-success alert-block fade in" id="successAlert">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+
+                <table class="table table-bordered" align="center" style="width:10%"> <?php
+
+                    for($i=0;$i<count($Array);$i++) /*Following block displays the column field names in the search form */
+                    { ?>
+                        <th>
+                            <div style="width: 250px">
+                                <?php echo $Array[$i]; ?>
+                            </div>
+                        </th> <?php
+                    } ?>
+
+                    <!-- Following block deals with form logic for search   -->
+
+
+                </table>
+
+            </div><!-- end alert -->
+
+        </div><!-- End Container sucess alert  -->
+
+
         <br>
+
 
         <table class="table table-bordered" align="center" style="width:10%">
             <thead>
