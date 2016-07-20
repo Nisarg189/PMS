@@ -3735,10 +3735,10 @@ button.close {
 .alert {
   padding: 10px 35px 10px 15px;
   margin-bottom: 20px;
-  color: #c09853;
-  background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
-  border-radius: 4px;
+  color: #FFFFFF;
+  background-color: #FFFFFF;
+  border: 0px solid #FFFFFF;
+  border-radius: 0px;
 }
 
 .alert h4 {
@@ -3763,17 +3763,17 @@ button.close {
 }
 
 .alert-success {
-  color: #468847;
+  color: #FFFFFF;
   background-color: #dff0d8;
   border-color: #d6e9c6;
 }
 
 .alert-success hr {
-  border-top-color: #c9e2b3;
+  border-top-color: #FFFFFF;
 }
 
 .alert-success .alert-link {
-  color: #356635;
+  color: #FFFFFF;
 }
 
 .alert-danger {

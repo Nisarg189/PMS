@@ -1,4 +1,5 @@
 <?php
+ob_start(); /* This funtion is added to avoid Header Refresh error */
 function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table in MySQL, Array is the array of field name, lookupCheck is boolean indicator*/
 {
     $hostname = 'localhost:3306';
@@ -20,7 +21,6 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
     {
         echo '<p>', $error->getMessage(), '</p>';
     }
-
     $actualTable = '1';
     if($lookupCheck)
     { ?>
@@ -33,10 +33,18 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             <div class = "col-sm-2">
             </div>
 
-            <div class = "col-sm-10">
+            <div class = "col-sm-2">
                 <form method = "post" action = "<?php $_PHP_SELF ?>">
                     <button type="submit" class="btn btn-default btn-sm" name="newButton" id="newButton">
                         <span class="glyphicon glyphicon-plus"></span> New
+                    </button>
+                </form>
+            </div>
+
+            <div class = "col-sm-8">
+                <form method = "post" action = "<?php $_PHP_SELF ?>">
+                    <button type="submit" class="btn btn-default btn-sm" name="searchButton" id="searchButton">
+                        <span class="glyphicon glyphicon-search"></span> Search
                     </button>
                 </form>
             </div>
@@ -46,122 +54,112 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
         <br>
 
         <table class="table table-bordered" align="center" style="width:10%">
-        <thead>
-        <tr> <?php
-            for($i=0;$i<count($Array);$i++)
-            { ?>
-                <th>
-                    <div style="width: 250px">
-                        <?php echo $Array[$i]; ?>
-                    </div>
-                </th> <?php
-            } ?>
-        </tr>
-        </thead>
-        <tbody> <?php
-
-        $counter = 0;
-        while($row = $sql->fetch())
-        {
-            $counter++; ?>
+            <thead>
             <tr> <?php
                 for($i=0;$i<count($Array);$i++)
                 { ?>
-                    <td><?php echo $row[$Array[$i]]; ?></td> <?php
-                }
-
-                if(isset($_POST["$counter"]))
-                {
-                    $conn = mysql_connect($hostname, $username, $password);
-                    if(! $conn )
-                    {
-                        die('Could not connect: ' . mysql_error());
-                    }
-                    $value = trim($row[$Array[0]],'"');
-                    $sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
-                    mysql_select_db($dbname);
-                    $retval = mysql_query( $sql, $conn );
-                    if(! $retval )
-                    {
-                        die('Could not delete data: ' . mysql_error());
-                    }
-                    else
-                        header("Refresh:0");
-                    mysql_close($conn);
+                    <th>
+                        <div style="width: 250px">
+                            <?php echo $Array[$i]; ?>
+                        </div>
+                    </th> <?php
                 } ?>
-
-                <form method = "post" action = "<?php $_PHP_SELF ?>">
-                    <td>
-                        <button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
-                    </td>
-                </form>
-
-            </tr> <?php
-        }
-
-        if(isset($_POST['add']))
-        {
-            $conn = mysql_connect($hostname, $username, $password);
-
-            if(! $conn )
+            </tr>
+            </thead>
+            <tbody> <?php
+            $counter = 0;
+            while($row = $sql->fetch())
             {
-                die('Could not connect: ' . mysql_error());
-            }
-
-            if(! get_magic_quotes_gpc() )
-            {
-                for($i=0;$i<count($Array);$i++)
-                {
-                    $addField[$i] = addslashes ($_POST["$Array[$i]"]);
-                }
-            }
-            else
-            {
-                for($i=0;$i<count($Array);$i++)
-                {
-                    $addField[$i] = $_POST["$Array[$i]"];
-                }
-            }
-
-            $str = implode (", ", $Array);
-            $val = "'".implode ("','", $addField)."'";
-            $sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
-
-            mysql_select_db($dbname);
-            $retval = mysql_query( $sql, $conn );
-
-            if(! $retval )
-            {
-                die('Could not enter data: ' . mysql_error());
-            }
-            else
-                header("Refresh:0");
-
-            mysql_close($conn);
-        }
-        else if(isset($_POST['newButton']))
-        { ?>
-            <!-- Form for adding new data -->
-            <form method = "post" action = "<?php $_PHP_SELF ?>">
+                $counter++; ?>
                 <tr> <?php
                     for($i=0;$i<count($Array);$i++)
                     { ?>
-                        <td>
-                            <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
-                        </td> <?php
+                        <td><?php echo $row[$Array[$i]]; ?></td> <?php
+                    }
+                    if(isset($_POST["$counter"]))
+                    {
+                        $conn = mysql_connect($hostname, $username, $password);
+                        if(! $conn )
+                        {
+                            die('Could not connect: ' . mysql_error());
+                        }
+                        $value = trim($row[$Array[0]],'"');
+                        $sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
+                        mysql_select_db($dbname);
+                        $retval = mysql_query( $sql, $conn );
+                        if(! $retval )
+                        {
+                            die('Could not delete data: ' . mysql_error());
+                        }
+                        else
+                            header("Refresh:0");
+                        mysql_close($conn);
                     } ?>
-                    <td>
-                        <button type="submit" id = "add" name="add">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </button>
-                    </td>
-                </tr>
-            </form> <?php
 
-        } ?>
-        </tbody>
+                    <form method = "post" action = "<?php $_PHP_SELF ?>">
+                        <td>
+                            <button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </td>
+                    </form>
+
+                </tr> <?php
+            }
+            if(isset($_POST['add']))
+            {
+                $conn = mysql_connect($hostname, $username, $password);
+                if(! $conn )
+                {
+                    die('Could not connect: ' . mysql_error());
+                }
+                if(! get_magic_quotes_gpc() )
+                {
+                    for($i=0;$i<count($Array);$i++)
+                    {
+                        $addField[$i] = addslashes ($_POST["$Array[$i]"]);
+                    }
+                }
+                else
+                {
+                    for($i=0;$i<count($Array);$i++)
+                    {
+                        $addField[$i] = $_POST["$Array[$i]"];
+                    }
+                }
+                $str = implode (", ", $Array);
+                $val = "'".implode ("','", $addField)."'";
+                $sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
+                mysql_select_db($dbname);
+                $retval = mysql_query( $sql, $conn );
+                if(! $retval )
+                {
+                    die('Could not enter data: ' . mysql_error());
+                }
+                else
+                    header("Refresh:0");
+                mysql_close($conn);
+            }
+            else if(isset($_POST['newButton']))
+            { ?>
+                <!-- Form for adding new data -->
+                <form method = "post" action = "<?php $_PHP_SELF ?>">
+                    <tr> <?php
+                        for($i=0;$i<count($Array);$i++)
+                        { ?>
+                            <td>
+                                <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
+                            </td> <?php
+                        } ?>
+                        <td>
+                            <button type="submit" id = "add" name="add">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </form> <?php
+            } ?>
+            </tbody>
         </table> <?php
     }
     else
@@ -178,7 +176,6 @@ if (isset($_GET['search']))
 {
     sendData($_GET['search']);
 }
-
 function sendData($tableSearchSend)
 {
     $actualTableName = getData($tableSearchSend, false);
@@ -190,7 +187,6 @@ function sendData($tableSearchSend)
     else
         $dummyData = getData($actualTableName, true);
 }
-
 function getData($tableSearch, $check)
 {
     $conn = mysql_connect('localhost:3306', 'root', '');
@@ -207,7 +203,6 @@ function getData($tableSearch, $check)
     {
         die('Query failed: ' . mysql_error());
     }
-
     $i = 0;
     while ($i < mysql_num_fields($result))
     {
