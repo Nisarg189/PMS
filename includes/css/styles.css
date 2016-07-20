@@ -213,5 +213,8 @@ ul.unstyled {
 
 }
 
+#hiddenForm {
+    visibility: hidden;
+}
 
 
