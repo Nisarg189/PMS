@@ -22,6 +22,7 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
         echo '<p>', $error->getMessage(), '</p>';
     }
     $actualTable = '1';
+    $retval = null;
     if($lookupCheck)
     { ?>
         <br>
@@ -65,9 +66,93 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                                 <?php echo $Array[$i]; ?>
                             </div>
                         </th> <?php
+                    }
+
+                    /* Following block deals with form logic for search */
+
+
+
+
+
+
+
+                    if(isset($_POST['searchInfo']))
+                    {
+                        $conn = mysql_connect($hostname, $username, $password);
+                        if(! $conn )
+                        {
+                            die('Could not connect: ' . mysql_error());
+                        }
+                        if(! get_magic_quotes_gpc() )
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField1[$i] = addslashes ($_POST["$Array[$i]"]);
+                            }
+                        }
+                        else
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField1[$i] = $_POST["$Array[$i]"];
+                            }
+                        }
+                        $str = "(".implode (", ", $Array).")";
+                        $val = "('".implode ("','", $addField1)."')";
+                        $sql = "SELECT * FROM $tableName WHERE $str = $val";
+                        mysql_select_db($dbname);
+                        $retval = mysql_query( $sql, $conn );
+
+                        if(! $retval )
+                        {
+                            die('Could not search data: ' . mysql_error());
+                        }
+                        else
+                        {
+                            while($rowFetch = mysql_fetch_array($retval, MYSQL_ASSOC)) {
+
+                                print_r($rowFetch);
+                            }
+                            /*header("Refresh:0");*/
+                        }
+                        mysql_close($conn);
+                    }
+                    else
+                    { ?>
+                        <!-- Form for adding new data -->
+
+                        <form method = "post" action = "<?php $_PHP_SELF ?>">
+                        <tr> <?php
+                            for($i=0;$i<count($Array);$i++)
+                            { ?>
+                                <td>
+                                    <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
+                                </td> <?php
+                            } ?>
+                            <td>
+                                <button type="submit" id = "searchInfo" name="searchInfo">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        </form> <?php
                     } ?>
 
-                    <!-- Following block deals with form logic for search   -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 </table>
@@ -78,6 +163,17 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
 
 
         <br>
+
+
+
+
+
+
+
+
+
+
+
 
 
         <table class="table table-bordered" align="center" style="width:10%">
