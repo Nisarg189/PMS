@@ -43,9 +43,9 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             </div>
 
             <div class = "col-sm-8">
-                    <button type="submit" class="btn btn-default btn-sm" name="searchButton" id="searchButton">
-                        <span class="glyphicon glyphicon-search"></span><a href="" id="alertMe">Search</a>
-                    </button>
+                <button type="submit" class="btn btn-default btn-sm" name="searchButton" id="searchButton">
+                    <span class="glyphicon glyphicon-search"></span><a href="" id="alertMe">Search</a>
+                </button>
             </div>
 
         </div>
@@ -58,7 +58,6 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
 
 
                 <table class="table table-bordered" align="center" style="width:10%"> <?php
-
                     for($i=0;$i<count($Array);$i++) /*Following block displays the column field names in the search form */
                     { ?>
                         <th>
@@ -67,15 +66,7 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                             </div>
                         </th> <?php
                     }
-
                     /* Following block deals with form logic for search */
-
-
-
-
-
-
-
                     if(isset($_POST['searchInfo']))
                     {
                         $conn = mysql_connect($hostname, $username, $password);
@@ -102,7 +93,6 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                         $sql = "SELECT * FROM $tableName WHERE $str = $val";
                         mysql_select_db($dbname);
                         $retval = mysql_query( $sql, $conn );
-
                         if(! $retval )
                         {
                             die('Could not search data: ' . mysql_error());
@@ -135,19 +125,19 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                         <!-- Form for adding new data -->
 
                         <form method = "post" action = "<?php $_PHP_SELF ?>">
-                        <tr> <?php
-                            for($i=0;$i<count($Array);$i++)
-                            { ?>
+                            <tr> <?php
+                                for($i=0;$i<count($Array);$i++)
+                                { ?>
+                                    <td>
+                                        <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
+                                    </td> <?php
+                                } ?>
                                 <td>
-                                    <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
-                                </td> <?php
-                            } ?>
-                            <td>
-                                <button type="submit" id = "searchInfo" name="searchInfo">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                </button>
-                            </td>
-                        </tr>
+                                    <button type="submit" id = "searchInfo" name="searchInfo">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </td>
+                            </tr>
                         </form> <?php
                     } ?>
 
@@ -210,9 +200,9 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                 <tr> <?php
                     for($i=0;$i<count($Array);$i++)
                     { ?>
-                        <td><?php echo $row[$Array[$i]]; ?></td> <?php
+                        <td><?php echo $row[$Array[$i]]; ?></td> <?php      /*      */
                     }
-                    if(isset($_POST["$counter"]))
+                    if(isset($_POST["delete_".$counter]))
                     {
                         $conn = mysql_connect($hostname, $username, $password);
                         if(! $conn )
@@ -234,8 +224,16 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
 
                     <form method = "post" action = "<?php $_PHP_SELF ?>">
                         <td>
-                            <button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
+                            <button type="submit" id = "<?php echo "delete_".$counter; ?>" name="<?php echo "delete_".$counter; ?>">
                                 <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </td>
+                    </form>
+
+                    <form method = "post" action = "<?php $_PHP_SELF ?>">
+                        <td>
+                            <button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
+                                <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                         </td>
                     </form>
