@@ -197,7 +197,7 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             while($row = $sql->fetch())
             {
                 $counter++; ?>
-                <tr> <?php
+                <tr id="<?php echo $counter; ?>" name="<?php echo $counter; ?>"> <?php
                     for($i=0;$i<count($Array);$i++)
                     { ?>
                         <td><?php echo $row[$Array[$i]]; ?></td> <?php      /*      */
@@ -230,13 +230,12 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                         </td>
                     </form>
 
-                    <form method = "post" action = "<?php $_PHP_SELF ?>">
+
                         <td>
-                            <button type="submit" id = "<?php echo $counter; ?>" name="<?php echo $counter; ?>">
+                            <button type="submit" onclick="editAccess(<?php echo $counter;?>)">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                         </td>
-                    </form>
 
                 </tr> <?php
             }
@@ -396,23 +395,22 @@ function getData($tableSearch, $check)
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master<strong class="caret"></strong></a>
 
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
 
-                            <li>
-                                <a href="?search=CarUser">User</a>
+                            <li><a href="?search=CarUser">User</a></li>
+
+                            <li><a href="?search=Worker">Worker</a></li>
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" href="#">Location</a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="?search=Plot">Plot</a></li>
+                                    <li><a tabindex="-1" href="?search=SubArea">Subarea</a></li>
+                                    <li><a href="?search=Area">Area</a></li>
+                                    <li><a href="?search=City">City</a></li>
+                                </ul>
                             </li>
 
-                            <li>
-                                <a href="?search=Worker">Worker</a>
-                            </li>
-
-                            <li>
-                                <a href="?search=Area">Location</a>
-                            </li>
-
-                            <li>
-                                <a href="?search=Fare">Fare</a>
-                            </li>
+                            <li><a href="?search=Fare">Fare</a></li>
                         </ul><!-- end dropdown-menu -->
                     </li>
 
@@ -482,6 +480,11 @@ function getData($tableSearch, $check)
     <!-- Custom JS -->
     <script src="includes/js/script.js"></script>
 
+    <script>
+        function editAccess(rowNum){
+            document.getElementById('rowNum').contentEditable='true';
+        }
+    </script>
 
 </body>
 </html>
