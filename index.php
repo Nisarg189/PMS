@@ -196,8 +196,8 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             $counter = 0;
             while($row = $sql->fetch())
             {
-                $counter++; ?>
-                <tr id="<?php echo $counter; ?>" name="<?php echo $counter; ?>"> <?php
+                $counter++;
+                echo '<tr id= '.$counter. ' name= '.$counter.'>';
                     for($i=0;$i<count($Array);$i++)
                     { ?>
                         <td><?php echo $row[$Array[$i]]; ?></td> <?php      /*      */
@@ -231,8 +231,8 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                     </form>
 
 
-                        <td>
-                            <button type="submit" onclick="editAccess(<?php echo $counter;?>)">
+                        <td><?php
+                            echo '<button onclick= editAccess('.$counter.')>'; ?>
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                         </td>
@@ -404,7 +404,7 @@ function getData($tableSearch, $check)
                                 <a tabindex="-1" href="#">Location</a>
                                 <ul class="dropdown-menu">
                                     <li><a tabindex="-1" href="?search=Plot">Plot</a></li>
-                                    <li><a tabindex="-1" href="?search=SubArea">Subarea</a></li>
+                                    <li><a tabindex="-1" href="?search=Subarea">Subarea</a></li>
                                     <li><a href="?search=Area">Area</a></li>
                                     <li><a href="?search=City">City</a></li>
                                 </ul>
@@ -464,8 +464,6 @@ function getData($tableSearch, $check)
 
 
 
-
-
     <!-- All Javascript at the bottom of the page for faster page loading -->
 
     <!-- First try for the online version of jQuery-->
@@ -481,8 +479,9 @@ function getData($tableSearch, $check)
     <script src="includes/js/script.js"></script>
 
     <script>
-        function editAccess(rowNum){
-            document.getElementById('rowNum').contentEditable='true';
+        function editAccess(rowNum) {
+            document.getElementById(rowNum).setAttribute("contenteditable","true");
+            document.getElementById(rowNum).style.backgroundColor = "green";
         }
     </script>
 
