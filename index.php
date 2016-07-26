@@ -35,26 +35,240 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             </div>
 
             <div class = "col-sm-2">
-                <form method = "post" action = "<?php $_PHP_SELF ?>">
-                    <button type="submit" class="btn btn-default btn-sm" name="newButton" id="newButton">
-                        <span class="glyphicon glyphicon-plus"></span> New
+                    <button type="submit" class="btn btn-default btn-sm" name="AddButton" id="AddButton">
+                        <span class="glyphicon glyphicon-plus"></span><a href="" id="alertMe"> New</a>
                     </button>
-                </form>
             </div>
 
             <div class = "col-sm-8">
                 <button type="submit" class="btn btn-default btn-sm" name="searchButton" id="searchButton">
-                    <span class="glyphicon glyphicon-search"></span><a href="" id="alertMe">Search</a>
+                    <span class="glyphicon glyphicon-search"></span><a href="" id="alertMe1">Search</a>
                 </button>
             </div>
 
         </div>
 
+        <br>
+        <div class="container">
+
+            <!-- ADD BLOCK  -->
+
+            <div class="alert alert-success alert-block fade in" id="successAlert">
+                <button type="button" class="close" data-hide="alert">&times;</button>
+
+
+                <table class="table table-bordered" align="center" style="width:10%"> <?php
+                    for($i=0;$i<count($Array);$i++) /*Following block displays the column field names in the add form */
+                    { ?>
+                        <th>
+                            <div style="width: 250px">
+                                <?php echo $Array[$i]; ?>
+                            </div>
+                        </th> <?php
+                    }
+                    /* Following block deals with form logic for add */
+                    if(isset($_POST['add']))
+                    {
+                        $conn = mysql_connect($hostname, $username, $password);
+                        if(! $conn )
+                        {
+                            die('Could not connect: ' . mysql_error());
+                        }
+                        if(! get_magic_quotes_gpc() )
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField[$i] = addslashes ($_POST["$Array[$i]"]);
+                            }
+                        }
+                        else
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField[$i] = $_POST["$Array[$i]"];
+                            }
+                        }
+                        $str = implode (", ", $Array);
+                        $val = "'".implode ("','", $addField)."'";
+                        $sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
+                        mysql_select_db($dbname);
+                        $retval = mysql_query( $sql, $conn );
+                        if(! $retval )
+                        {
+                            die('Could not enter data: ' . mysql_error());
+                        }
+                        else
+                            header("Refresh:0");
+                        mysql_close($conn);
+                    }
+                    else
+                    { ?>
+                        <!-- Form for adding new data -->
+                        <form method = "post" action = "<?php $_PHP_SELF ?>">
+                            <tr> <?php
+                                for($i=0;$i<count($Array);$i++)
+                                { ?>
+                                    <td>
+                                        <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
+                                    </td> <?php
+                                } ?>
+                                <td>
+                                    <button type="submit" id = "add" name="add">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </form> <?php
+                    } ?>
+
+                </table>
+
+            </div><!-- end alert -->
+
+        </div><!-- End Container sucess alert  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <div class="container">
 
-            <div class="alert alert-success alert-block fade in" id="successAlert">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <!-- EDIT BLOCK  -->
+
+            <div class="alert alert-success alert-block fade in" id="successAlert2">
+                <button type="button" class="close" data-hide="alert">&times;</button>
+
+
+                <table class="table table-bordered" align="center" style="width:10%"> <?php
+                    for($i=0;$i<count($Array);$i++) /*Following block displays the column field names in the add form */
+                    { ?>
+                        <th>
+                            <div style="width: 250px">
+                                <?php echo $Array[$i]; ?>
+                            </div>
+                        </th> <?php
+                    }
+                    /* Following block deals with form logic for add */
+                    if(isset($_POST['edit']))
+                    {
+                        $conn = mysql_connect($hostname, $username, $password);
+                        if(! $conn )
+                        {
+                            die('Could not connect: ' . mysql_error());
+                        }
+                        if(! get_magic_quotes_gpc() )
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField[$i] = addslashes ($_POST["$Array[$i]"]);
+                            }
+                        }
+                        else
+                        {
+                            for($i=0;$i<count($Array);$i++)
+                            {
+                                $addField[$i] = $_POST["$Array[$i]"];
+                            }
+                        }
+                        $str = implode (", ", $Array);
+                        $val = "'".implode ("','", $addField)."'";
+                        $sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
+                        mysql_select_db($dbname);
+                        $retval = mysql_query( $sql, $conn );
+                        if(! $retval )
+                        {
+                            die('Could not enter data: ' . mysql_error());
+                        }
+                        else
+                            header("Refresh:0");
+                        mysql_close($conn);
+                    }
+                    else
+                    { ?>
+                        <!-- Form for adding new data -->
+                        <a href="#" target="_blank" id="alertMe2" onclick="javascript:Test('Test');">Google Chrome</a>
+                        <script type="text/javascript">
+                            function sendID(clicked_id)
+                            {
+                                var l = document.getElementById('my-link');
+                                l.click();
+                                alert(clicked_id);
+                            }
+                        </script>
+                        <form method = "post" action = "<?php $_PHP_SELF ?>">
+                            <tr> <?php
+                                for($i=0;$i<count($Array);$i++)
+                                { ?>
+                                    <td>
+                                        <input value = "1" name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
+                                    </td> <?php
+                                } ?>
+                                <td>
+                                    <button type="submit" id = "editCnf" name="editCnf">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="submit" id = "editCancel" name="editCancel">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </form> <?php
+                    } ?>
+
+                </table>
+
+            </div><!-- end alert -->
+
+        </div><!-- End Container sucess alert  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="container">
+
+            <!-- SEARCH BLOCK  -->
+
+            <div class="alert alert-success alert-block fade in" id="successAlert1">
+                <button type="button" class="close" data-hide="alert">&times;</button>
 
 
                 <table class="table table-bordered" align="center" style="width:10%"> <?php
@@ -103,7 +317,7 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                             echo "<tr>";
                             for($i=0;$i<count($Array);$i++)
                             {
-                                echo "<td width='200px' align='center'>" . $Array[$i] . "</td>";
+                                echo "<td width='100px' align='center'>" . $Array[$i] . "</td>";
                             }
                             echo "</tr>";
                             while($rowFetch=mysql_fetch_array($retval)) {
@@ -141,28 +355,31 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
                         </form> <?php
                     } ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 </table>
 
             </div><!-- end alert -->
 
+
         </div><!-- End Container sucess alert  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         <br>
@@ -181,7 +398,15 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
 
         <table class="table table-bordered" align="center" style="width:10%">
             <thead>
-            <tr> <?php
+            <tr>
+                <th>
+                    Sr. No.
+                </th>
+
+                <th>
+                    <div  style="width: 80px">Action</div>
+                </th>
+                <?php
                 for($i=0;$i<count($Array);$i++)
                 { ?>
                     <th>
@@ -197,101 +422,61 @@ function fetch_edit($tableName, $Array, $lookupCheck)		/* tableName is the table
             while($row = $sql->fetch())
             {
                 $counter++;
-                echo '<tr id= '.$counter. ' name= '.$counter.'>';
-                    for($i=0;$i<count($Array);$i++)
-                    { ?>
-                        <td><?php echo $row[$Array[$i]]; ?></td> <?php      /*      */
-                    }
-                    if(isset($_POST["delete_".$counter]))
+
+                echo '<tr id= row_'.$counter. ' name= '.$counter.'>';
+                    echo '<td>'.$counter.'</td>';
+
+                if(isset($_POST["delete_".$counter]))
+                {
+                    $conn = mysql_connect($hostname, $username, $password);
+                    if(! $conn )
                     {
-                        $conn = mysql_connect($hostname, $username, $password);
-                        if(! $conn )
-                        {
-                            die('Could not connect: ' . mysql_error());
-                        }
-                        $value = trim($row[$Array[0]],'"');
-                        $sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
-                        mysql_select_db($dbname);
-                        $retval = mysql_query( $sql, $conn );
-                        if(! $retval )
-                        {
-                            die('Could not delete data: ' . mysql_error());
-                        }
-                        else
-                            header("Refresh:0");
-                        mysql_close($conn);
-                    } ?>
+                        die('Could not connect: ' . mysql_error());
+                    }
+                    $value = trim($row[$Array[0]],'"');
+                    $sql = "DELETE FROM $tableName WHERE $Array[0] = $value";
+                    mysql_select_db($dbname);
+                    $retval = mysql_query( $sql, $conn );
+                    if(! $retval )
+                    {
+                        die('Could not delete data: ' . mysql_error());
+                    }
+                    else
+                        header("Refresh:0");
+                    mysql_close($conn);
+                } ?>
 
-                    <form method = "post" action = "<?php $_PHP_SELF ?>">
-                        <td>
-                            <button type="submit" id = "<?php echo "delete_".$counter; ?>" name="<?php echo "delete_".$counter; ?>">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </td>
-                    </form>
+                <form method = "post" action = "<?php $_PHP_SELF ?>">
+                    <td>
+                        <button type="submit" id = "<?php echo "delete_".$counter; ?>" name="<?php echo "delete_".$counter; ?>">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                </form> <?php
+                    echo '<button id="editAccessBtn_'.$counter.'">'; ?>
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                </td><?php
 
+                for($i=0;$i<count($Array);$i++)
+                { ?>
+                    <td><?php echo $row[$Array[$i]]; ?></td> <?php
+                }
 
-                        <td><?php
-                            echo '<button onclick= editAccess('.$counter.')>'; ?>
-                                <span class="glyphicon glyphicon-pencil"></span>
-                            </button>
-                        </td>
+                echo '<td id="okBtn_'.$counter.'" style="visibility: hidden">';?>
+                    <button>
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </button>
+                </td> <?php
+
+                echo '<td id="removeBtn_'.$counter.'" onclick= cancelEdit('.$counter.') style="visibility: hidden">';?>
+                <button>
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                </td>
 
                 </tr> <?php
             }
-            if(isset($_POST['add']))
-            {
-                $conn = mysql_connect($hostname, $username, $password);
-                if(! $conn )
-                {
-                    die('Could not connect: ' . mysql_error());
-                }
-                if(! get_magic_quotes_gpc() )
-                {
-                    for($i=0;$i<count($Array);$i++)
-                    {
-                        $addField[$i] = addslashes ($_POST["$Array[$i]"]);
-                    }
-                }
-                else
-                {
-                    for($i=0;$i<count($Array);$i++)
-                    {
-                        $addField[$i] = $_POST["$Array[$i]"];
-                    }
-                }
-                $str = implode (", ", $Array);
-                $val = "'".implode ("','", $addField)."'";
-                $sql = "INSERT INTO $tableName ". "($str) ". "VALUES($val)";
-                mysql_select_db($dbname);
-                $retval = mysql_query( $sql, $conn );
-                if(! $retval )
-                {
-                    die('Could not enter data: ' . mysql_error());
-                }
-                else
-                    header("Refresh:0");
-                mysql_close($conn);
-            }
-            else if(isset($_POST['newButton']))
-            { ?>
-                <!-- Form for adding new data -->
-                <form method = "post" action = "<?php $_PHP_SELF ?>">
-                    <tr> <?php
-                        for($i=0;$i<count($Array);$i++)
-                        { ?>
-                            <td>
-                                <input name = "<?php echo $Array[$i]; ?>" type = "text" id = "<?php echo $Array[$i]; ?>">
-                            </td> <?php
-                        } ?>
-                        <td>
-                            <button type="submit" id = "add" name="add">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </button>
-                        </td>
-                    </tr>
-                </form> <?php
-            } ?>
+            ?>
             </tbody>
         </table> <?php
     }
@@ -463,11 +648,10 @@ function getData($tableSearch, $check)
 
 
 
-
     <!-- All Javascript at the bottom of the page for faster page loading -->
 
     <!-- First try for the online version of jQuery-->
-    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="C:\xampp\htdocs\PMS_Repo\includes\js"></script>
 
     <!-- If no online access, fallback to our hardcoded version of jQuery -->
     <script>window.jQuery || document.write('<script src="includes/js/jquery-1.8.2.min.js"><\/script>')</script>
@@ -478,12 +662,6 @@ function getData($tableSearch, $check)
     <!-- Custom JS -->
     <script src="includes/js/script.js"></script>
 
-    <script>
-        function editAccess(rowNum) {
-            document.getElementById(rowNum).setAttribute("contenteditable","true");
-            document.getElementById(rowNum).style.backgroundColor = "green";
-        }
-    </script>
 
 </body>
 </html>

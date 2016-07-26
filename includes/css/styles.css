@@ -266,5 +266,9 @@ ul.unstyled {
 #hiddenForm {
     visibility: hidden;
 }
+.hide_seek
+{
+	display: none;
+}
 
 
